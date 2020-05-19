@@ -15,6 +15,11 @@ eksctl create cluster -f cluster.yaml
 kubectl apply -f manifests/
 ```
 
+- Adicionar as seguintes Tags nas suas subnets públicas e privadas para poder provisionar services externos e internos.
+```
+Private Subnets - kubernetes.io/role/internal-elb: 1
+Public Subnets - kubernetes.io/role/elb: 1
+```
 
 ## Realizar update do cluster após alterar alguma configuração
 
@@ -27,3 +32,7 @@ eksctl update cluster --config-file=config.yaml
 ```shell
 eksctl update cluster --config-file=cluster.yaml --approve
 ```
+
+## Referências
+
+LoadBalancer Service Annotations - https://gist.github.com/mgoodness/1a2926f3b02d8e8149c224d25cc57dc1

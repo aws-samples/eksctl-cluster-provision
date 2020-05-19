@@ -2,7 +2,7 @@ apiVersion: eksctl.io/v1alpha5
 kind: ClusterConfig
 
 metadata:
-  name: stf-poc-cluster
+  name: poc-cluster
   region: us-east-1
 
 vpc: # Existing Amazon VPC
@@ -37,9 +37,9 @@ iam:
 managedNodeGroups:
   - name: app-node-group
     instanceType: t2.medium
-    minSize: 1
-    desiredCapacity: 1
-    maxSize: 4
+    minSize: 3
+    desiredCapacity: 3
+    maxSize: 10
     availabilityZones: ["us-east-1a", "us-east-1b"]
     volumeSize: 20
     privateNetworking: true # Provisionar as instâncias dos Nodes somente em subnets privadas
@@ -52,8 +52,9 @@ managedNodeGroups:
     labels: {role: worker} # Labels que vão ser aplicadas a nivel do K8s
     tags: # Tags que serão aplicadas nas Ec2
       nodegroup-role: worker 
-      k8s.io/cluster-autoscaler/stf-poc-cluster: owned 
+      k8s.io/cluster-autoscaler/poc-cluster: owned 
       k8s.io/cluster-autoscaler/enabled: "true" # Não pode ser booleano
+      Name: poc-cluster-nodes
 
     # Você pode definir uma Role ou escolher que o eksctl crie as Policies para você
     iam:
