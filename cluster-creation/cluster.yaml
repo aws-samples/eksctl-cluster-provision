@@ -2,7 +2,7 @@ apiVersion: eksctl.io/v1alpha5
 kind: ClusterConfig
 
 metadata:
-  name: poc-cluster
+  name: stf-poc-cluster
   region: us-east-1
 
 vpc: # Existing Amazon VPC
@@ -11,7 +11,7 @@ vpc: # Existing Amazon VPC
     privateAccess: true
   id: "vpc-0c2cdbcb1a891f179"
   cidr: "10.2.0.0/16"
-  subnets:
+  subnets: # Definir todas as Subnets para que seus Masters possam estar alocados.
     private:
       us-east-1a:
           id: "subnet-060059c30de92792d"
@@ -42,33 +42,40 @@ managedNodeGroups:
     maxSize: 4
     availabilityZones: ["us-east-1a", "us-east-1b"]
     volumeSize: 20
-    privateNetworking: true # Launch in private subnets only
+    privateNetworking: true # Provisionar as instâncias dos Nodes somente em subnets privadas
 
     ssh:
       allow: false
       # publicKeyPath: ~/.ssh/ec2_id_rsa.pub
       # sourceSecurityGroupIds: ["sg-09b2a55e337f21e5e"]
 
-    labels: {role: worker}
-    tags:
-      nodegroup-role: worker
-    
-    iam:
-      instanceRoleARN: "arn:aws:iam::936068047509:role/NodeInstanceRole"
-      # withAddonPolicies: # Add policies to IAM Role addon
-      #   imageBuilder: true
-      #   autoScaler: true
-      #   externalDNS: true
-      #   certManager: true
-      #   appMesh: true
-      #   ebs: true
-      #   fsx: true
-      #   efs: true
-      #   albIngress: true
-      #   xRay: true
-      #   cloudWatch: true
+    labels: {role: worker} # Labels que vão ser aplicadas a nivel do K8s
+    tags: # Tags que serão aplicadas nas Ec2
+      nodegroup-role: worker 
+      k8s.io/cluster-autoscaler/stf-poc-cluster: owned 
+      k8s.io/cluster-autoscaler/enabled: "true" # Não pode ser booleano
 
-cloudWatch:
+    # Você pode definir uma Role ou escolher que o eksctl crie as Policies para você
+    iam:
+      attachPolicyARNs:
+        - arn:aws:iam::aws:policy/AmazonEKSWorkerNodePolicy
+        - arn:aws:iam::aws:policy/AmazonEC2ContainerRegistryReadOnly
+        - arn:aws:iam::aws:policy/AmazonEKS_CNI_Policy
+      # instanceRoleARN: "arn:aws:iam::936068047509:role/NodeInstanceRole"
+      withAddonPolicies: # Adiciona policies na role dos Nodes
+        imageBuilder: false
+        autoScaler: true
+        externalDNS: true
+        certManager: true
+        appMesh: true
+        ebs: true
+        fsx: true
+        efs: true
+        albIngress: true
+        xRay: true
+        cloudWatch: true
+
+cloudWatch: # Configuração do export dos logs do Control Plane para o Cloudtwatch
   clusterLogging:
     # enable specific types of cluster control plane logs
     enableTypes: ["audit", "authenticator", "controllerManager"]

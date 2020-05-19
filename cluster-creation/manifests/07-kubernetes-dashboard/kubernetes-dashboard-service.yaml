@@ -1,0 +1,19 @@
+# ------------------- Dashboard Service ------------------- #
+kind: Service
+apiVersion: v1
+metadata:
+  annotations:
+    service.beta.kubernetes.io/aws-load-balancer-ssl-cert: arn:aws:acm:us-east-1:673991670544:certificate/92efc9d4-67e5-4a8e-bcea-bd74821b2e84
+    service.beta.kubernetes.io/aws-load-balancer-internal: "true"
+    external-dns.alpha.kubernetes.io/hostname: k8s-dashboard.oithea.com.br # give your domain name here
+  labels:
+    k8s-app: kubernetes-dashboard
+  name: kubernetes-dashboard
+  namespace: kube-system
+spec:
+  ports:
+    - port: 443
+      targetPort: 9090
+  type: LoadBalancer
+  selector:
+    k8s-app: kubernetes-dashboard
