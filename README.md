@@ -7,10 +7,11 @@ O objetivo desse repositório é demonstrar a utilização do [eksclt](https://e
 * kubectl
 * [eksctl](https://docs.aws.amazon.com/eks/latest/userguide/eksctl.html#installing-eksctl)
 * aws-cli
-* VPC previamente configurada
+* VPC previamente configurada, pode ser encontrada nesse [repositório](https://github.com/BRCentralSA/aws-brazil-edu-series/blob/master/utils/vpc-template.yaml), necessário minimo de duas Zonas de disponibilidade e 4 subnets, 2 públicas e 2 privadas
 * Credenciais de acesso a AWS previamente configuradas em **~/.aws/credentials**
-* cookiecutter
+* [cookiecutter](https://cookiecutter.readthedocs.io/en/1.7.0/index.html) para gerar o cluster.yaml necessário para criar o cluster utilizando o eksclt
 
+## Criando seu primeiro cluster
 
 ## Referências
 
