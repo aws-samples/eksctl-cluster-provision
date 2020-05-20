@@ -1,0 +1,47 @@
+---
+apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  name: kube2iam
+  namespace: default
+  labels:
+    app: kube2iam
+spec:
+  selector:
+    matchLabels:
+      name: kube2iam
+  updateStrategy:
+    type: RollingUpdate
+  template:
+    metadata:
+      labels:
+        name: kube2iam
+    spec:
+      serviceAccountName: kube2iam
+      hostNetwork: true
+      containers:
+        - image: jtblin/kube2iam:0.10.7
+          imagePullPolicy: Always
+          name: kube2iam
+          args:
+            - "--auto-discover-base-arn"
+            - "--auto-discover-default-role=true"
+            - "--iptables=true"
+            - "--host-ip=$(HOST_IP)"
+            - "--node=$(NODE_NAME)"
+            - "--host-interface=eni+"
+          env:
+            - name: HOST_IP
+              valueFrom:
+                fieldRef:
+                  fieldPath: status.podIP
+            - name: NODE_NAME
+              valueFrom:
+                fieldRef:
+                  fieldPath: spec.nodeName
+          ports:
+            - containerPort: 8181
+              hostPort: 8181
+              name: http
+          securityContext:
+            privileged: true

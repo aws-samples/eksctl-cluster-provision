@@ -55,6 +55,7 @@ managedNodeGroups:
       k8s.io/cluster-autoscaler/poc-cluster: owned 
       k8s.io/cluster-autoscaler/enabled: "true" # Não pode ser booleano
       Name: poc-cluster-nodes
+      
 
     # Você pode definir uma Role ou escolher que o eksctl crie as Policies para você
     iam:
@@ -63,7 +64,7 @@ managedNodeGroups:
         - arn:aws:iam::aws:policy/AmazonEC2ContainerRegistryReadOnly
         - arn:aws:iam::aws:policy/AmazonEKS_CNI_Policy
       # instanceRoleARN: "arn:aws:iam::936068047509:role/NodeInstanceRole"
-      withAddonPolicies: # Adiciona policies na role dos Nodes
+      withAddonPolicies: # Adiciona policies na role dos Nodes para controllers adicionais do cluster
         imageBuilder: false
         autoScaler: true
         externalDNS: true
@@ -76,12 +77,14 @@ managedNodeGroups:
         xRay: true
         cloudWatch: true
 
-cloudWatch: # Configuração do export dos logs do Control Plane para o Cloudtwatch
+cloudWatch: # Configuração do export dos logs do ControlPlane para o Cloudtwatch
   clusterLogging:
     # enable specific types of cluster control plane logs
     enableTypes: ["audit", "authenticator", "controllerManager"]
     # all supported types: "api", "audit", "authenticator", "controllerManager", "scheduler"
     # supported special values: "*" and "all"
+
+# Those are old node groups, that are just ASG with specifc AMI for registration under K8S
 
 # nodeGroups:
 #   - name: ng-1

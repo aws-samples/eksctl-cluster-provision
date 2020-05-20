@@ -9,9 +9,7 @@ O objetivo desse repositório é demonstrar a utilização do [eksclt](https://e
 * aws-cli
 * VPC previamente configurada
 * Credenciais de acesso a AWS previamente configuradas em **~/.aws/credentials**
-
-## 
-
+* cookiecutter
 
 
 ## Referências

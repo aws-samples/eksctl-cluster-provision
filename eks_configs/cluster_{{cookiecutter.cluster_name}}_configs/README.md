@@ -1,14 +1,16 @@
 ## Create Amazon EKS Cluster Step by Step
 
-- Create Amazon EKS service role in IAM console (https://docs.aws.amazon.com/eks/latest/userguide/getting-started-console.html#role-create)
+- Criar Amazon EKS service role no console do IAM (https://docs.aws.amazon.com/eks/latest/userguide/getting-started-console.html#role-create)
 
-- Create a IAM Role for your managed workers nodes in AWS (https://docs.aws.amazon.com/eks/latest/userguide/worker_node_IAM_role.html)
+- A role dos Workers nodes vai ser criada pelo eksctl, porém a criação também é possível via console (https://docs.aws.amazon.com/eks/latest/userguide/worker_node_IAM_role.html)
 
 - Criar o cluster de EKS rodando o seguinte comando 
 ```shell
-eksctl create cluster -f cluster.yaml
+eksctl create cluster -f cluster-template.yaml
 ```
 - Realizando o update de sua Kubeconfig localmente - aws eks --region YOUR_REGION update-kubeconfig --name YOUR_CLUSTER_NAME
+
+- Para que o Cluster Autoscaler funcione de maneira correta é necessário adicionar um policy na role criada pelo eksctl que permita com que o AutoScaler escale as máquinas baseado nas requisições dos deployments. (https://github.com/jtblin/kube2iam)
 
 - Aplicar os manifestos dos componentes adicionais do cluster de Kubernets
 ```shell

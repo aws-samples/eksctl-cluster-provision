@@ -106,6 +106,8 @@ kind: Deployment
 metadata:
   name: cluster-autoscaler
   namespace: kube-system
+  annotations:
+    iam.amazonaws.com/role: <ARN of instance role (not instance profile)> # Substituir com a sua role se estiver usando o Kube2iam
   labels:
     app: cluster-autoscaler
 spec:
@@ -135,7 +137,7 @@ spec:
             - --stderrthreshold=info
             - --cloud-provider=aws
             - --skip-nodes-with-local-storage=false
-            - --node-group-auto-discovery=asg:tag=k8s.io/cluster-autoscaler/enabled,k8s.io/cluster-autoscaler/poc-cluster
+            - --node-group-auto-discovery=asg:tag=k8s.io/cluster-autoscaler/enabled,k8s.io/cluster-autoscaler/{{cookiecutter.cluster_name}}
             - --balance-similar-node-groups
             - --skip-nodes-with-system-pods=false
           env:

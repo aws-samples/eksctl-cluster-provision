@@ -5,7 +5,7 @@ metadata:
   namespace: kube-system
 data:
   mapRoles: |
-    - rolearn: arn:aws:iam::673991670544:role/eks-theia-prd-role-nodes
+    - rolearn: arn:aws:iam::673991670544:role/poc-cluster
       username: system:node:{{EC2PrivateDNSName}}
       groups:
         - system:bootstrappers
