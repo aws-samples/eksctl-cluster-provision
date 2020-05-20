@@ -13,6 +13,17 @@ O objetivo desse repositório é demonstrar a utilização do [eksclt](https://e
 
 ## Criando seu primeiro cluster
 
+* Execute o seguinte comando com o cookiecutter para gerar as configurações do seu cluster EKS:
+```shell
+cookiecutter eks_configs
+```
+
+* Preencha as perguntas que serão realizadas pelo cookiecutter, no final uma pasta com o nome que você definiu para o seu cluster será criada na raiz, entre nela e siga os passos do README.md
+
+## Exemplos
+
+A pasta **examples/cluster-creation** foi criada para facilitar o entendimento do que será gerado pelo cookiecutter com os valores previamente preenchidos.
+
 ## Referências
 
 eksctl - https://github.com/weaveworks/eksctl
