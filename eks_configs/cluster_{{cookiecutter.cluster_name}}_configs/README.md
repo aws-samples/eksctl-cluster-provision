@@ -12,9 +12,15 @@ eksctl create cluster -f cluster-template.yaml
 
 - Para que o Cluster Autoscaler funcione de maneira correta é necessário adicionar um policy na role criada pelo eksctl que permita com que o AutoScaler escale as máquinas baseado nas requisições dos deployments. (https://github.com/jtblin/kube2iam)
 
-- Aplicar os manifestos dos componentes adicionais do cluster de Kubernets
+- Ir até a pasta manifests/00-aws-auth-nodes e seguir as instruções do README.
+
+- Ir até a pasta manifests/08-cluster-autoscaling seguir as intruções do README e ajustar a ROLE.
+
+- Aplicar os manifestos dos componentes adicionais do cluster de Kubernetes (Os outros manifestos podem ser aplicados para utilização de componentes adicionais se preferir)
 ```shell
-kubectl apply -f manifests/
+kubectl apply -f manifests/02-kube2iam
+kubectl apply -f manifests/04-metric-server
+kubectl apply -f manifests/08-cluster-autoscaling
 ```
 
 - Adicionar as seguintes Tags nas suas subnets públicas e privadas para poder provisionar services (LoadBalancers) externos e internos.
