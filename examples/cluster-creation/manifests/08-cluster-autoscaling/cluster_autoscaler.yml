@@ -107,7 +107,7 @@ metadata:
   name: cluster-autoscaler
   namespace: kube-system
   annotations:
-    iam.amazonaws.com/role: arn:aws:iam::936068047509:role/eksctl-poc-cluster-nodegroup-app-NodeInstanceRole-X1807HBNUDP7 # Substituir com a sua role se estiver usando o Kube2iam
+    iam.amazonaws.com/role: arn:aws:iam::ACCOUNT_ID:role/ROLE_NAME # Substituir com a sua role se estiver usando o Kube2iam
   labels:
     app: cluster-autoscaler
 spec:
