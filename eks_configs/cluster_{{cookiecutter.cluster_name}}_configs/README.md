@@ -1,7 +1,5 @@
 ## Create Amazon EKS Cluster Step by Step
 
-- Criar Amazon EKS service role no console do IAM (https://docs.aws.amazon.com/eks/latest/userguide/getting-started-console.html#role-create)
-
 - A role dos Workers nodes vai ser criada pelo eksctl, porém a criação também é possível via console (https://docs.aws.amazon.com/eks/latest/userguide/worker_node_IAM_role.html)
 
 - Criar o cluster de EKS rodando o seguinte comando 

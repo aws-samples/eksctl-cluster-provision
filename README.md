@@ -13,15 +13,17 @@ O objetivo desse repositório é demonstrar a utilização do [eksclt](https://e
 
 ## Criando seu primeiro cluster
 
+* Criar Amazon EKS service role no console do IAM (https://docs.aws.amazon.com/eks/latest/userguide/getting-started-console.html#role-create), essa role será utilizada posteeriormente.
+
 * Execute o seguinte comando com o cookiecutter para gerar as configurações do seu cluster EKS:
 ```shell
 cookiecutter eks_configs
 ```
 
-* Preencha as perguntas que serão realizadas pelo cookiecutter, no final uma pasta com o nome que você definiu para o seu cluster será criada na raiz, entre nela e siga os passos do README.md
+* As seguintes perguntas serão exibidas, após preenche-las uma pasta será criada na raiz do repositório com o nome que você definiu para o cluster, entre nela e siga os passos do README.md.
 
 ```
-cluster_name [Nome do clustwer, ex: poc-cluster]: poc-cluster-test
+cluster_name [Nome do cluster, ex: poc-cluster]: poc-cluster-test
 region [Nome da reigião, ex: us-east-1]: us-east-1
 vpc_id [ID da VPC da sua conta, ex: vpc-00000000]: vpc-00000000
 vpc_cidr [CIDR da VPC, ex: 10.0.0.0/16]: 10.2.0.0/16
@@ -35,8 +37,11 @@ subnet_pub_1a [O ID da primeira subnet publica, ex: subnet-00000000]: subnet-000
 subnet_pub_1a_cidr [O CIDR da primeira subnet publica, ex: 10.2.0.0/24]: 10.2.0.0/24
 subnet_pub_1b [O ID da segunda subnet publica, ex: subnet-00000000]: subnet-000000
 subnet_pub_1b_cidr [O CIDR da segunda subnet publica: 10.3.0.0/24]: 10.2.1.0/24
-eks_service_role [A Role do EKS (arn:aws:iam::xxxxx:role/eksClusterRole) consulte detalhes de como criar no README]: arn:aws:iam::ID_DA_CONTA:role/eksClusterRole
+eks_service_role [A Role criada anteriormente]: 
 ```
+
+
+
 
 ## Arquitetura do cluster que será provisionado
 
