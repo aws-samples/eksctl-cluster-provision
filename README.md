@@ -54,6 +54,12 @@ eks_service_role [A Role criada anteriormente]:
 
 A pasta **examples/cluster-creation** foi criada para facilitar o entendimento do que será gerado pelo cookiecutter com os valores previamente preenchidos.
 
+## Aplicação Exemplo
+
+Foi desenvolvida uma aplicação Java para podermos testar o nosso cluster provisionado anteriormente, essa aplicação realiza a chamada para a API da AWS utilizando uma role com permissões (O permissionamento é feito através do Kube2Iam) onde lista o conteudo de um bucket.
+
+Siga as instruções do [README](examples/java-application-example/README.md) para provisiona-la no cluster
+
 ## Referências
 
 eksctl - https://github.com/weaveworks/eksctl

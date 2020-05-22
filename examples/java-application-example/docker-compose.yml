@@ -1,0 +1,16 @@
+version: '3.3'
+services:
+  apiso:
+      build: .
+      networks:
+        - project-network
+      ports:
+        - "8080:8080"
+      restart: always
+      environment:
+        BUCKET_NAME: amazon-forecast-blood-analysis
+        REGION_NAME: us-east-1
+networks:
+  project-network:
+    driver: bridge
+  

@@ -1,0 +1,14 @@
+#Escala a aplicacao baseado em CPU
+apiVersion: autoscaling/v1
+kind: HorizontalPodAutoscaler
+metadata:
+  name: placeholder-app
+  namespace: prd
+spec:
+  maxReplicas: 2
+  minReplicas: 1
+  scaleTargetRef:
+    apiVersion: extensions/v1beta1
+    kind: Deployment
+    name: placeholder-app
+  targetCPUUtilizationPercentage: 70
