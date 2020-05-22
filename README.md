@@ -62,4 +62,7 @@ Siga as instruções do [README](examples/java-application-example/README.md) pa
 
 ## Referências
 
-eksctl - https://github.com/weaveworks/eksctl
+https://github.com/weaveworks/eksctl
+https://docs.aws.amazon.com/eks/latest/userguide/getting-started.html
+https://github.com/jtblin/kube2iam
+https://docs.aws.amazon.com/eks/latest/userguide/cluster-autoscaler.html
