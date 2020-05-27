@@ -1,5 +1,5 @@
 {
-    "cluster_name": "Nome do clustwer, ex: poc-cluster",
+    "cluster_name": "Nome do cluster, ex: poc-cluster",
     "region": "Nome da reigião, ex: us-east-1",
     "vpc_id": "ID da VPC da sua conta, ex: vpc-00000000",
     "vpc_cidr": "CIDR da VPC, ex: 10.0.0.0/16",
@@ -13,5 +13,5 @@
     "subnet_pub_1a_cidr": "O CIDR da primeira subnet publica, ex: 10.2.0.0/24",
     "subnet_pub_1b": "O ID da segunda subnet publica, ex: subnet-00000000",
     "subnet_pub_1b_cidr": "O CIDR da segunda subnet publica: 10.3.0.0/24",
-    "eks_service_role": "Sua EKS cluster IAM role"
+    "eks_service_role": "Sua EKS cluster IAM role ARN"
 }

@@ -8,7 +8,7 @@ eksctl create cluster -f cluster-template.yaml
 ```
 - Realizando o update de sua Kubeconfig localmente - aws eks --region YOUR_REGION update-kubeconfig --name YOUR_CLUSTER_NAME
 
-- Para que o Cluster Autoscaler funcione de maneira correta é necessário adicionar um policy na role criada pelo eksctl que permita com que o AutoScaler escale as máquinas baseado nas requisições dos deployments. (https://github.com/jtblin/kube2iam)
+- Para que o Cluster Autoscaler funcione de maneira correta é necessário adicionar um policy na role criada pelo eksctl que permita com que o AutoScaler escale as máquinas baseado nas requisições dos deployments.(https://aws.amazon.com/premiumsupport/knowledge-center/eks-cluster-autoscaler-setup/)
 
 - Ir até a pasta manifests/00-aws-auth-nodes e seguir as instruções do README.
 
