@@ -10,7 +10,7 @@
 
 ### Buildando e enviado a imagem para o ECR
 
-- Realizar Login no repositório do ECR
+- Realizar Login no repositório do ECR (Comando de login do ECR precisa do aws cli v2)
 ```shell
 aws ecr get-login-password --region REGION | docker login --username AWS --password-stdin ACCOUNT_ID.dkr.ecr.REGION.amazonaws.com
 ```
@@ -69,7 +69,7 @@ kubectl apply -f kubernetes/
 
 ### Testando a aplicação
 
-* Precisamos no endpoint do balanceador público provisionado pelo Kubernetes, para isso execute o seguinte comando
+* Precisamos do endpoint do balanceador público provisionado pelo Kubernetes, para isso execute o seguinte comando
 
 ```shell
 kubectl get svc -nprd | awk '{print $4}' | grep -vi external

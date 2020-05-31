@@ -37,7 +37,7 @@ subnet_pub_1a [O ID da primeira subnet publica, ex: subnet-00000000]: subnet-000
 subnet_pub_1a_cidr [O CIDR da primeira subnet publica, ex: 10.2.0.0/24]: 10.2.0.0/24
 subnet_pub_1b [O ID da segunda subnet publica, ex: subnet-00000000]: subnet-000000
 subnet_pub_1b_cidr [O CIDR da segunda subnet publica: 10.3.0.0/24]: 10.2.1.0/24
-eks_service_role [A Role criada anteriormente]: 
+eks_service_role [O ARN da role criada anteriormente]: 
 ```
 
 
