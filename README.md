@@ -186,3 +186,8 @@ https://docs.aws.amazon.com/eks/latest/userguide/cluster-autoscaler.html
 
 ### TODO
 - Automate the cluster autoscaler role update
+
+
+## License Summary
+
+This sample code is made available under the MIT-0 license. See the LICENSE file.
