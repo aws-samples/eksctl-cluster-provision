@@ -107,7 +107,7 @@ metadata:
   name: cluster-autoscaler
   namespace: kube-system
   annotations:
-    iam.amazonaws.com/role: <ARN of instance role (not instance profile)> # Substituir com a sua role se estiver usando o Kube2iam
+    iam.amazonaws.com/role: <MANAGED_ROLE_ARN> # Substituir com a sua role se estiver usando o Kube2iam
   labels:
     app: cluster-autoscaler
 spec:

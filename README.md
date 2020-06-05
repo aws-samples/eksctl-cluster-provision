@@ -1,68 +1,188 @@
 # EKS Cluster Demo
 
-O objetivo desse repositório é demonstrar a utilização do [eksclt](https://eksctl.io) para provisionar um cluster EKS em alta disponibilidade dentro de uma rede VPC já existente em sua conta na AWS
+The purpose of this repository is to demonstrate the use of [eksclt](https://eksctl.io) to provision an EKS cluster in high availability in your AWS account with managed node groups.
 
-## Pré-Requisitos
+* This demo was tested in us-east-1 (Viginia) region.
 
+## Prerequisites
+
+* Pre-configured AWS access credentials, [how to configure](https://docs.aws.amazon.com/pt_br/sdk-for-java/v1/developer-guide/setup-credentials.html)
 * [kubectl](https://kubernetes.io/docs/tasks/tools/install-kubectl/)
 * [eksctl](https://docs.aws.amazon.com/eks/latest/userguide/eksctl.html#installing-eksctl)
 * [aws-cli](https://docs.aws.amazon.com/pt_br/cli/latest/userguide/cli-chap-install.html)
-* VPC previamente configurada, pode ser encontrada nesse [repositório](https://github.com/BRCentralSA/aws-brazil-edu-series/blob/master/utils/vpc-template.yaml), necessário minimo de duas Zonas de disponibilidade e 4 subnets, 2 públicas e 2 privadas
-* Credenciais de acesso a AWS previamente configuradas em **~/.aws/credentials** (https://docs.aws.amazon.com/pt_br/sdk-for-java/v1/developer-guide/setup-credentials.html)
-* [cookiecutter](https://cookiecutter.readthedocs.io/en/1.7.0/index.html) para gerar o cluster.yaml necessário para criar o cluster utilizando o eksclt
+* [cookiecutter](https://cookiecutter.readthedocs.io/en/1.7.0/index.html) to generate the cluster.yaml required to create the cluster using eksclt 
+* [aws cdk](https://docs.aws.amazon.com/cdk/latest/guide/getting_started.html)
 
-## Criando seu primeiro cluster
+## Creating the cluster prerequisites
 
-* Criar Amazon EKS service role no console do IAM (https://docs.aws.amazon.com/eks/latest/userguide/getting-started-console.html#role-create), essa role será utilizada posteeriormente.
+In this repository you are going to find an folder called [infraestructure](./infraestructure) and there you will find a CDK template that provision all the cluster needs as AWS IAM Roles and more.
 
-* Execute o seguinte comando com o cookiecutter para gerar as configurações do seu cluster EKS:
+```shell
+cdk deploy iam-stack vpc
+```
+
+This will create all the AWS components that your EKS cluster will need, eg: **VPC, IAM Roles**
+
+### Outputs:
+
+```
+Outputs:
+iam-stack.eksrole = arn:aws:iam::936068047509:role/eksClusterRoleNew
+
+Outputs:
+vpc.VpcID = vpc-0c0922c8f9885a7c2
+vpc.VpcCidr = 10.10.0.0/16
+vpc.AvailabilityZones = ['us-east-1a', 'us-east-1b']
+vpc.Region = us-east-1
+vpc.PublicSubnetsIds = ['subnet-0df32c722d7837fa1', 'subnet-06f61fa00a7812f6a']
+vpc.PrivateSubnetsIds = ['subnet-0743456fcea2e53a5', 'subnet-045e5cd3c07e29256']
+```
+
+The above outputs will be used to create you EKS cluster
+
+## Creating your first cluster using eksctl
+
+Now it is time to create you eks cluster template that eksctl will use to create your Kubernetes stack.
+
+* Run the follow command so cookiecutter can create the eks.yaml template:
 ```shell
 cookiecutter eks_configs
 ```
 
-* As seguintes perguntas serão exibidas, após preenche-las uma pasta será criada na raiz do repositório com o nome que você definiu para o cluster, entre nela e siga os passos do README.md.
+*  The following questions will be displayed, after filling them a folder will be created at the root of the repository with the name you defined for the cluster.
 
 ```
-cluster_name [Nome do cluster, ex: poc-cluster]: poc-cluster-test
-region [Nome da reigião, ex: us-east-1]: us-east-1
-vpc_id [ID da VPC da sua conta, ex: vpc-00000000]: vpc-00000000
-vpc_cidr [CIDR da VPC, ex: 10.0.0.0/16]: 10.2.0.0/16
-availability_zone_1 [A primeira zona de disponibilidade, ex: us-east-1a]: us-east-1a
-availability_zone_2 [A segunda zona de disponibilidade, ex: us-east-1b]: us-east-1b
+cluster_name [Your cluster name, eg: poc-cluster]: poc-cluster-test
+region [Region name to provision, ex: us-east-1]: us-east-1
+vpc_id [Your VPC id, eg: vpc-00000000]: vpc-00000000
+vpc_cidr [VPC CIDR, eg: 10.10.0.0/16]: 10.2.0.0/16
+availability_zone_1 [The first availability zone, eg: us-east-1a]: us-east-1a
+availability_zone_2 [The second availability zone, eg: us-east-1b]: us-east-1b
 subnet_priv_1a [O ID da primeira subnet privada, ex: subnet-00000000]: subnet-0000000
-subnet_priv_1a_cidr [O CIDR da primeira subnet privada, ex: 10.0.0.0/24]: 10.2.2.0/24
-subnet_priv_1b [O ID da segunda subnet privada, ex: subnet-00000000]: subnet-0000000
-subnet_priv_1b_cidr [O CIDR da segunda subnet privada: 10.1.0.0/24]: 10.2.3.0/24
-subnet_pub_1a [O ID da primeira subnet publica, ex: subnet-00000000]: subnet-000000
-subnet_pub_1a_cidr [O CIDR da primeira subnet publica, ex: 10.2.0.0/24]: 10.2.0.0/24
-subnet_pub_1b [O ID da segunda subnet publica, ex: subnet-00000000]: subnet-000000
-subnet_pub_1b_cidr [O CIDR da segunda subnet publica: 10.3.0.0/24]: 10.2.1.0/24
-eks_service_role [O ARN da role criada anteriormente]: 
+subnet_priv_1a_cidr [The CIDR of the above subnet, eg: 10.10.2.0/24]: 10.2.2.0/24
+subnet_priv_1b [The second private subnet id [us-east-1b], ex: subnet-00000000]: subnet-0000000
+subnet_priv_1b_cidr [The CIDR of the above subnet, eg: 10.10.3.0/24]: 10.2.3.0/24
+subnet_pub_1a [The first public subnet id [us-east-1a], ex: subnet-00000000]: subnet-000000
+subnet_pub_1a_cidr [The CIDR of the above subnet, eg: 10.10.0.0/24]: 10.2.0.0/24
+subnet_pub_1b The second public subnet id [us-east-1b], ex: subnet-00000000]: subnet-000000
+subnet_pub_1b_cidr [The CIDR of the above subnet, eg: 10.10.1.0/24]: 10.2.1.0/24
+eks_service_role [The eks cluster role]: 
 ```
 
+**eks_service_role**: eks cluster role that CDK created before.
 
+* After the template creation it's time to create our cluster, so run the following command
+```shell
+eksctl create cluster -f <YOU_CLUSTER_NAME_FOLDER>/cluster-template.yaml
+```
+It will take some time so be patient
 
+* After the cluster creation it's time to update your locally kubeconfig, run the following command
+```shell
+aws eks --region <YOUR_REGION> update-kubeconfig --name <YOUR_CLUSTER_NAME>
+```
 
-## Arquitetura do cluster que será provisionado
+* Go to console and tag your subnets with public and private specific tags, those tags are used for provision public and private Loadbalancers.
+```
+Private Subnets - kubernetes.io/role/internal-elb: 1
+Public Subnets - kubernetes.io/role/elb: 1
+```
+
+## Applying extra kubernetes manifest to create useful components
+
+This step is optional but we are going to add some useful features to our cluster, like:
+
+- [Cluster Autoscaler](https://docs.aws.amazon.com/eks/latest/userguide/cluster-autoscaler.html)
+- [Kube2Iam](https://github.com/jtblin/kube2iam)
+- [Metric Server](https://github.com/kubernetes-sigs/metrics-server)
+
+**TIP**: Every time when **<YOU_CLUSTER_NAME_FOLDER>** appears replace with the folder name that cookiecutter created
+
+**Metric Server**
+
+```shell
+kubectl apply -f <YOU_CLUSTER_NAME_FOLDER>/manifests/04-metric-server
+```
+
+**Kube2Iam**
+```shell
+kubectl apply -f <YOU_CLUSTER_NAME_FOLDER>/manifests/02-kube2iam
+```
+
+**Cluster Autoscaler**
+
+For Cluster autoscaling creation you need to do a few steps before creation since we are using kube2iam we need to grant permission to the role of the managed nodes.
+
+* Get the managed nodes role.
+
+Replace **<YOUR_CLUSTER_NAME>** with your cluster name
+
+```shell
+aws eks describe-nodegroup --cluster-name <YOUR_CLUSTER_NAME> --nodegroup-name app-node-group | jq .nodegroup.nodeRole
+```
+
+Go to **<YOU_CLUSTER_NAME_FOLDER>/manifests/08-cluster-autoscaling/cluster_autoscaler.yaml** and replace **<MANAGED_ROLE_ARN>** in  with the role arn that you get above
+
+Now go to AWS console and search for the IAM Role that you get above, go to **trust relashionship** click in **Edit trust relashionship** and place the following content:
+
+```json
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Effect": "Allow",
+      "Principal": {
+        "Service": "ec2.amazonaws.com"
+      },
+      "Action": "sts:AssumeRole"
+    },
+    {
+      "Sid": "",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "<MANAGED_ROLE_ARN>"
+      },
+      "Action": "sts:AssumeRole"
+    }
+  ]
+}
+```
+
+This is how it will look like in console.
+
+<p align="center"> 
+<img src="images/policy-kube2iam.jpg">
+</p>
+
+* Finally apply the manifest
+
+```shell
+kubectl apply -f <YOU_CLUSTER_NAME_FOLDER>/manifests/08-cluster-autoscaling
+```
+
+## Cluster architecture that will be provisioned
 
 <p align="center"> 
 <img src="images/cluster_diagram.png">
 </p>
 
 
-## Exemplos
+## Examples
 
-A pasta **examples/cluster-creation** foi criada para facilitar o entendimento do que será gerado pelo cookiecutter com os valores previamente preenchidos.
+The **examples/cluster-creation** folder was created to make it easier to understand what will be generated by the cookiecutter with the previously populated values. 
 
-## Aplicação Exemplo
+## Example application
 
-Foi desenvolvida uma aplicação Java para podermos testar o nosso cluster provisionado anteriormente, essa aplicação realiza a chamada para a API da AWS utilizando uma role com permissões (O permissionamento é feito através do Kube2Iam) onde lista o conteudo de um bucket.
+A Java application has been developed so that we can test our previously provisioned cluster, this application makes the call to the AWS API using a role with permissions (Permission is done through Kube2Iam) where it lists the contents of a bucket.
 
-Siga as instruções do [README](examples/java-application-example/README.md) para provisiona-la no cluster
+Follow the [README] instructions (examples/java-application-example/README.md) to provision it in the cluster
 
-## Referências
+## References
 
 https://github.com/weaveworks/eksctl
 https://docs.aws.amazon.com/eks/latest/userguide/getting-started.html
 https://github.com/jtblin/kube2iam
 https://docs.aws.amazon.com/eks/latest/userguide/cluster-autoscaler.html
+
+### TODO
+- Automate the cluster autoscaler role update
