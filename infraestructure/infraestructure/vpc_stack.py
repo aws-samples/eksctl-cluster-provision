@@ -3,7 +3,7 @@ import aws_cdk.aws_ec2 as ec2
 
 
 # Infraestructure definition using CDK
-
+# TODO: Get Subnet CIDR
 class VpcStack(core.Stack):
 
     def __init__(self, scope: core.Construct, id: str, **kwargs):

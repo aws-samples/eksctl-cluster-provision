@@ -11,6 +11,7 @@ region_name = "us-east-1"
 env_US = core.Environment(region=region_name)
 app = core.App()
 
+# Declare stacks using CDK
 vpc_stack = VpcStack(app, "vpc")
 iam_stack = IamStack(app, "iam-stack")
 

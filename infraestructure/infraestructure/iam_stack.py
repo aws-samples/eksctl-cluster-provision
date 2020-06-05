@@ -13,13 +13,13 @@ class IamStack(core.Stack):
 
     def create_iam_roles(self):
         # Creating Amazon EKS Cluster Role
-        managed_policy_name = "AmazonEKSClusterPolicy"
-
-        iam.Role(self, "eksClusterRole", assumed_by=iam.ServicePrincipal("eks.amazonaws.com"), 
-            managed_policies=[managed_policy_name])
+        managed_policy = iam.ManagedPolicy.from_aws_managed_policy_name("AmazonEKSClusterPolicy")
+        role_arn = iam.Role(self, "eksClusterRole", assumed_by=iam.ServicePrincipal("eks.amazonaws.com"),
+            managed_policies = [managed_policy], role_name="eksClusterRoleNew")
+        
         # Uses self here that car re-use Later
 
-        # core.CfnOutput(self, "Eks", value="us-east-1")
+        core.CfnOutput(self, "eks_role", value=role_arn.role_arn)
         
 
         

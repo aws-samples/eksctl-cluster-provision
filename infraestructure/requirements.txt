@@ -14,7 +14,7 @@ aws-cdk.cx-api==1.44.0
 aws-cdk.region-info==1.44.0
 cattrs==1.0.0
 constructs==3.0.3
--e git+git@github.com:BRCentralSA/amazon-eks-demo.git@699b55aa4c84b99a40c9f860b30a9ea7845f56c2#egg=infraestructure&subdirectory=infraestructure
+-e git+git@github.com:BRCentralSA/amazon-eks-demo.git@574e337770b8889e177d361ba619f382c56d732b#egg=infraestructure&subdirectory=infraestructure
 jsii==1.6.0
 publication==0.0.3
 python-dateutil==2.8.1
