@@ -1,6 +1,6 @@
 # EKS Cluster Demo
 
-The purpose of this repository is to demonstrate the use of [eksclt](https://eksctl.io) to provision an EKS cluster in high availability in your AWS account.
+The purpose of this repository is to demonstrate the use of [eksclt](https://eksctl.io) to provision an EKS cluster in high availability in your AWS account with managed node groups.
 
 * This demo was tested in us-east-1 (Viginia) region.
 
@@ -21,7 +21,7 @@ In this repository you are going to find an folder called [infraestructure](./in
 cdk deploy iam-stack vpc
 ```
 
-This will create all the AWS components that your EKS cluster will need, eg: VPC, IAM Roles
+This will create all the AWS components that your EKS cluster will need, eg: **VPC, IAM Roles**
 
 ### Outputs:
 
@@ -44,7 +44,7 @@ The above outputs will be used to create you EKS cluster
 
 Now it is time to create you eks cluster template that eksctl will use to create your Kubernetes stack.
 
-* Execute o seguinte comando com o cookiecutter para gerar as configurações do seu cluster EKS:
+* Run the follow command so cookiecutter can create the eks.yaml template:
 ```shell
 cookiecutter eks_configs
 ```
@@ -52,25 +52,59 @@ cookiecutter eks_configs
 * As seguintes perguntas serão exibidas, após preenche-las uma pasta será criada na raiz do repositório com o nome que você definiu para o cluster, entre nela e siga os passos do README.md.
 
 ```
-cluster_name [Nome do cluster, ex: poc-cluster]: poc-cluster-test
-region [Nome da reigião, ex: us-east-1]: us-east-1
-vpc_id [ID da VPC da sua conta, ex: vpc-00000000]: vpc-00000000
-vpc_cidr [CIDR da VPC, ex: 10.0.0.0/16]: 10.2.0.0/16
-availability_zone_1 [A primeira zona de disponibilidade, ex: us-east-1a]: us-east-1a
-availability_zone_2 [A segunda zona de disponibilidade, ex: us-east-1b]: us-east-1b
+cluster_name [Your cluster name, eg: poc-cluster]: poc-cluster-test
+region [Region name to provision, ex: us-east-1]: us-east-1
+vpc_id [Your VPC id, eg: vpc-00000000]: vpc-00000000
+vpc_cidr [VPC CIDR, eg: 10.10.0.0/16]: 10.2.0.0/16
+availability_zone_1 [The first availability zone, eg: us-east-1a]: us-east-1a
+availability_zone_2 [The second availability zone, eg: us-east-1b]: us-east-1b
 subnet_priv_1a [O ID da primeira subnet privada, ex: subnet-00000000]: subnet-0000000
-subnet_priv_1a_cidr [O CIDR da primeira subnet privada, ex: 10.0.0.0/24]: 10.2.2.0/24
-subnet_priv_1b [O ID da segunda subnet privada, ex: subnet-00000000]: subnet-0000000
-subnet_priv_1b_cidr [O CIDR da segunda subnet privada: 10.1.0.0/24]: 10.2.3.0/24
-subnet_pub_1a [O ID da primeira subnet publica, ex: subnet-00000000]: subnet-000000
-subnet_pub_1a_cidr [O CIDR da primeira subnet publica, ex: 10.2.0.0/24]: 10.2.0.0/24
-subnet_pub_1b [O ID da segunda subnet publica, ex: subnet-00000000]: subnet-000000
-subnet_pub_1b_cidr [O CIDR da segunda subnet publica: 10.3.0.0/24]: 10.2.1.0/24
-eks_service_role [O ARN da role criada anteriormente]: 
+subnet_priv_1a_cidr [The CIDR of the above subnet, eg: 10.10.2.0/24]: 10.2.2.0/24
+subnet_priv_1b [The second private subnet id [us-east-1b], ex: subnet-00000000]: subnet-0000000
+subnet_priv_1b_cidr [The CIDR of the above subnet, eg: 10.10.3.0/24]: 10.2.3.0/24
+subnet_pub_1a [The first public subnet id [us-east-1a], ex: subnet-00000000]: subnet-000000
+subnet_pub_1a_cidr [The CIDR of the above subnet, eg: 10.10.0.0/24]: 10.2.0.0/24
+subnet_pub_1b The second public subnet id [us-east-1b], ex: subnet-00000000]: subnet-000000
+subnet_pub_1b_cidr [The CIDR of the above subnet, eg: 10.10.1.0/24]: 10.2.1.0/24
+eks_service_role [The eks cluster role]: 
 ```
 
+**eks_service_role**: eks cluster role that CDK created before.
 
+* After the template creation it's time to create our cluster, so run the following command
+```shell
+eksctl create cluster -f <YOU_CLUSTER_NAME_FOLDER>/cluster-template.yaml
+```
+It will take some time so be patient
 
+* After the cluster creation it's time to update your locally kubeconfig, run the following command
+```shell
+aws eks --region YOUR_REGION update-kubeconfig --name YOUR_CLUSTER_NAME
+```
+
+## Applying extra kubernetes manifest to create useful components
+
+This step is optional but we are going to add some useful features to our cluster, like:
+
+- [Cluster Autoscaler](https://docs.aws.amazon.com/eks/latest/userguide/cluster-autoscaler.html)
+- [Kube2Iam](https://github.com/jtblin/kube2iam)
+- [Metric Server](https://github.com/kubernetes-sigs/metrics-server)
+
+**Metric Server**
+
+```shell
+kubectl apply -f <YOU_CLUSTER_NAME_FOLDER>/manifests/04-metric-server
+```
+
+**Kube2Iam**
+```shell
+kubectl apply -f <YOU_CLUSTER_NAME_FOLDER>/manifests/02-kube2iam
+```
+
+**Cluster Autoscaler**
+```shell
+kubectl apply -f <YOU_CLUSTER_NAME_FOLDER>/manifests/08-cluster-autoscaling
+```
 
 ## Cluster architecture that will be provisioned
 
@@ -95,3 +129,7 @@ https://github.com/weaveworks/eksctl
 https://docs.aws.amazon.com/eks/latest/userguide/getting-started.html
 https://github.com/jtblin/kube2iam
 https://docs.aws.amazon.com/eks/latest/userguide/cluster-autoscaler.html
+
+### TODO
+
+- Use CDK to add the subnet tags to provision Public and Private ELB's
