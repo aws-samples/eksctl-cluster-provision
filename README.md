@@ -102,6 +102,9 @@ kubectl apply -f <YOU_CLUSTER_NAME_FOLDER>/manifests/02-kube2iam
 ```
 
 **Cluster Autoscaler**
+
+For Cluster autoscaling creation you need to do a few steps before creation.
+
 ```shell
 kubectl apply -f <YOU_CLUSTER_NAME_FOLDER>/manifests/08-cluster-autoscaling
 ```
