@@ -79,7 +79,13 @@ It will take some time so be patient
 
 * After the cluster creation it's time to update your locally kubeconfig, run the following command
 ```shell
-aws eks --region YOUR_REGION update-kubeconfig --name YOUR_CLUSTER_NAME
+aws eks --region <YOUR_REGION> update-kubeconfig --name <YOUR_CLUSTER_NAME>
+```
+
+* Go to console and tag your subnets with public and private specific tags, those tags are used for provision public and private Loadbalancers.
+```
+Private Subnets - kubernetes.io/role/internal-elb: 1
+Public Subnets - kubernetes.io/role/elb: 1
 ```
 
 ## Applying extra kubernetes manifest to create useful components
@@ -89,6 +95,8 @@ This step is optional but we are going to add some useful features to our cluste
 - [Cluster Autoscaler](https://docs.aws.amazon.com/eks/latest/userguide/cluster-autoscaler.html)
 - [Kube2Iam](https://github.com/jtblin/kube2iam)
 - [Metric Server](https://github.com/kubernetes-sigs/metrics-server)
+
+**TIP**: Every time when **<YOU_CLUSTER_NAME_FOLDER>** appears replace with the folder name that cookiecutter created
 
 **Metric Server**
 
@@ -103,7 +111,50 @@ kubectl apply -f <YOU_CLUSTER_NAME_FOLDER>/manifests/02-kube2iam
 
 **Cluster Autoscaler**
 
-For Cluster autoscaling creation you need to do a few steps before creation.
+For Cluster autoscaling creation you need to do a few steps before creation since we are using kube2iam we need to grant permission to the role of the managed nodes.
+
+* Get the managed nodes role.
+
+Replace **<YOUR_CLUSTER_NAME>** with your cluster name
+
+```shell
+aws eks describe-nodegroup --cluster-name <YOUR_CLUSTER_NAME> --nodegroup-name app-node-group | jq .nodegroup.nodeRole
+```
+
+Go to **<YOU_CLUSTER_NAME_FOLDER>/manifests/08-cluster-autoscaling/cluster_autoscaler.yaml** and replace **<MANAGED_ROLE_ARN>** in  with the role arn that you get above
+
+Now go to AWS console and search for the IAM Role that you get above, go to **trust relashionship** click in **Edit trust relashionship** and place the following content:
+
+```json
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Effect": "Allow",
+      "Principal": {
+        "Service": "ec2.amazonaws.com"
+      },
+      "Action": "sts:AssumeRole"
+    },
+    {
+      "Sid": "",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "<MANAGED_ROLE_ARN>"
+      },
+      "Action": "sts:AssumeRole"
+    }
+  ]
+}
+```
+
+This is how it will look like in console.
+
+<p align="center"> 
+<img src="images/policy-kube2iam.jpg">
+</p>
+
+* Finally apply the manifest
 
 ```shell
 kubectl apply -f <YOU_CLUSTER_NAME_FOLDER>/manifests/08-cluster-autoscaling
@@ -134,10 +185,4 @@ https://github.com/jtblin/kube2iam
 https://docs.aws.amazon.com/eks/latest/userguide/cluster-autoscaler.html
 
 ### TODO
-
-- Use CDK to add the subnet tags to provision Public and Private ELB's
-```
-Private Subnets - kubernetes.io/role/internal-elb: 1
-Public Subnets - kubernetes.io/role/elb: 1
-```
 - Automate the cluster autoscaler role update
