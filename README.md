@@ -49,7 +49,7 @@ Now it is time to create you eks cluster template that eksctl will use to create
 cookiecutter eks_configs
 ```
 
-* As seguintes perguntas serão exibidas, após preenche-las uma pasta será criada na raiz do repositório com o nome que você definiu para o cluster, entre nela e siga os passos do README.md.
+*  The following questions will be displayed, after filling them a folder will be created at the root of the repository with the name you defined for the cluster.
 
 ```
 cluster_name [Your cluster name, eg: poc-cluster]: poc-cluster-test
