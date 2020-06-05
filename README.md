@@ -136,3 +136,8 @@ https://docs.aws.amazon.com/eks/latest/userguide/cluster-autoscaler.html
 ### TODO
 
 - Use CDK to add the subnet tags to provision Public and Private ELB's
+```
+Private Subnets - kubernetes.io/role/internal-elb: 1
+Public Subnets - kubernetes.io/role/elb: 1
+```
+- Automate the cluster autoscaler role update
