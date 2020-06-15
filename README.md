@@ -27,15 +27,15 @@ This will create all the AWS components that your EKS cluster will need, eg: **V
 
 ```
 Outputs:
-iam-stack.eksrole = arn:aws:iam::936068047509:role/eksClusterRoleNew
+iam-stack.eksrole = arn:aws:iam::xxxxxx:role/eksClusterRoleNew
 
 Outputs:
-vpc.VpcID = vpc-0c0922c8f9885a7c2
+vpc.VpcID = vpc-xxxxxxxx
 vpc.VpcCidr = 10.10.0.0/16
 vpc.AvailabilityZones = ['us-east-1a', 'us-east-1b']
 vpc.Region = us-east-1
-vpc.PublicSubnetsIds = ['subnet-0df32c722d7837fa1', 'subnet-06f61fa00a7812f6a']
-vpc.PrivateSubnetsIds = ['subnet-0743456fcea2e53a5', 'subnet-045e5cd3c07e29256']
+vpc.PublicSubnetsIds = ['subnet-xxxxxxx', 'subnet-xxxxxxx']
+vpc.PrivateSubnetsIds = ['subnet-xxxxxxx', 'subnet-xxxxxxx']
 ```
 
 The above outputs will be used to create you EKS cluster
