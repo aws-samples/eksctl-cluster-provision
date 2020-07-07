@@ -1,44 +1,46 @@
 # Java Application Example
 
-## Pré-Requisitos
+## Prerequisites
 
-- [Repositório ECR criado na conta](https://docs.aws.amazon.com/pt_br/AmazonECR/latest/userguide/repository-create.html) com o nome java-application-example.
-- Bucket que será utilizado para listar os objetos pela nossa aplicação.
-- Role com permissão de acesso ao bucket S3, como estamos utilizando o kube2iam é necessário alterar a Trust Relationship, consultar (https://github.com/jtblin/kube2iam)
+- [ECR repository created in the account](https://docs.aws.amazon.com/pt_br/AmazonECR/latest/userguide/repository-create.html) with the name java-application-example.
+- Bucket that will be used to list objects by our application.
+- Role with permission to access the S3 bucket, as we are using kube2iam it is necessary to change the Trust Relationship, consult (https://github.com/jtblin/kube2iam)
 
-## Realizando o Deploy
+## Deploying
 
-### Buildando e enviado a imagem para o ECR
+### Building and sending the image to the ECR
 
-- Realizar Login no repositório do ECR (Comando de login do ECR precisa do aws cli v2)
+- Login to the ECR repository (ECR login command needs aws cli v2)
+
 ```shell
 aws ecr get-login-password --region REGION | docker login --username AWS --password-stdin ACCOUNT_ID.dkr.ecr.REGION.amazonaws.com
 ```
-- Na raiz desta pasta executar o comando a seguir para buildar o container.
+
+- At the root of this folder, execute the following command to build the container.
 
 ```shell
 docker build -t java-application-example .
 ```
 
-- Realizar o tagging da imagem buildada localmente para preparar para envia-la para o repositório
+- Tagging the image built locally to prepare to send it to the repository
 
 ```shell
 docker tag java-application-example:latest ACCOUNT_ID.dkr.ecr.REGION.amazonaws.com/java-application-example:latest
 ```
 
-- Realizar o Push da imagem para o repositório ECR
+- Push the image to the ECR repository
 
 ```shell
 docker push ACCOUNT_ID.dkr.ecr.REGION.amazonaws.com/java-application-example:latest
 ```
 
-### Alterando manifestos para realizar deploy da aplicação no EKS
+### Changing manifests to deploy the application on EKS
 
 **kubernetes/01-configmap.yaml**
 
 ```yaml
-  BUCKET_NAME: Seu bucket para utilizar na PoC
-  REGION_NAME: Regiao onde esta seu bucket
+BUCKET_NAME: Your bucket to use on PoC
+REGION_NAME: Region where your bucket is
 ```
 
 **kubernetes/02-deployment.yaml**
@@ -46,37 +48,35 @@ docker push ACCOUNT_ID.dkr.ecr.REGION.amazonaws.com/java-application-example:lat
 ```yaml
   metadata:
       annotations:
-        iam.amazonaws.com/role: <Role com permissao de acesso ao S3>
+        iam.amazonaws.com/role: <Role with permission to access S3>
   ...
-  - image: <URL da imagem que subimos para o ECR>
+  - image: <URL of the image we upload to the ECR>
 ```
 
-### Aplicando manifestos
+### Applying manifests
 
-* Antes de aplicar é necessário criar o namespace para nossa aplicação, nessa demonstração estamos utilizando o namespace prd, então execute o seguinte comando:
+- Before applying it is necessary to create the namespace for our application, in this demonstration we are using the namespace prd, so execute the following command:
 
 ```shell
 kubectl create namespace prd
 ```
 
-* Então depois de tudo alterado e configurado execute o seguinte comando
+- Then after everything is changed and configured, execute the following command
 
 ```shell
 kubectl apply -f kubernetes/
 ```
 
-* Assim a sua aplicação será provisionada dentro do cluster no namespace PRD.
+- So your application will be provisioned within the cluster in the PRD namespace.
 
-### Testando a aplicação
+### Testing the application
 
-* Precisamos do endpoint do balanceador público provisionado pelo Kubernetes, para isso execute o seguinte comando
+- We need the endpoint of the public load balancer provided by Kubernetes, to do this run the following command
 
 ```shell
 kubectl get svc -nprd | awk '{print $4}' | grep -vi external
 ```
 
-* Acesse o endpoint resultado do comando acima no path **/api/listarObjetos/**
+- Access the endpoint result of the above command in path **/api/listarObjetos/**
 
-* Ele exibira a lista de objetos presentes no seu Bucket utilizando as permissões da role criada acessando sua conta na AWS de maneira segura
-
-## Arquitetura Aplicação
+- It will display the list of objects present in the Bucket using the permissions of the role created before
