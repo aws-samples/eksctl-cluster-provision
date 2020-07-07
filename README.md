@@ -184,10 +184,10 @@ https://docs.aws.amazon.com/eks/latest/userguide/getting-started.html
 https://github.com/jtblin/kube2iam
 https://docs.aws.amazon.com/eks/latest/userguide/cluster-autoscaler.html
 
-### TODO
-- Automate the cluster autoscaler role update
+## Security
 
+See [CONTRIBUTING](CONTRIBUTING.md#security-issue-notifications) for more information.
 
-## License Summary
+## License
 
-This sample code is made available under the MIT-0 license. See the LICENSE file.
+This library is licensed under the MIT-0 License. See the LICENSE file.
