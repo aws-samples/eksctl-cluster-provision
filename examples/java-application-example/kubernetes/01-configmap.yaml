@@ -1,7 +1,7 @@
 apiVersion: v1
 data:
-  BUCKET_NAME: <Nome do bucket que sera utilizado para listar os objetos>
-  REGION_NAME: <Região do bucket>
+  BUCKET_NAME: <Your bucket to use on PoC>
+  REGION_NAME: <Region where your bucket is>
 kind: ConfigMap
 metadata:
   name: placeholder-app
