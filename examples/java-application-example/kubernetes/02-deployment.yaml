@@ -1,0 +1,49 @@
+#Manifesto de deployment da aplicacao
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: placeholder-app
+  namespace: prd
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: placeholder-app
+  strategy:
+    rollingUpdate:
+      maxSurge: 25%
+      maxUnavailable: 0%
+    type: RollingUpdate
+  template:
+    metadata:
+      annotations:
+        iam.amazonaws.com/role: <Role com permissao de acesso ao S3>
+      labels:
+        app: placeholder-app
+    spec:
+      containers:
+        - image: <URL da imagem que subimos para o ECR>
+          name: placeholder-app
+          resources:
+            requests:
+              memory: "512Mi"
+              cpu: "158m"
+          ports:
+            - containerPort: 8080
+              name: placeholder-app
+          livenessProbe:
+            httpGet:
+              path: /api/health/
+              port: 8080
+            initialDelaySeconds: 5
+            periodSeconds: 5
+            timeoutSeconds: 10
+            failureThreshold: 5
+          readinessProbe:
+            httpGet:
+              path: /api/health/
+              port: 8080
+            initialDelaySeconds: 20
+          envFrom:
+           - configMapRef:
+              name: placeholder-app

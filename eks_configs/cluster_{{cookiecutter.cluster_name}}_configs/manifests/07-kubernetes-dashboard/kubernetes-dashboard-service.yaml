@@ -1,0 +1,17 @@
+# ------------------- Dashboard Service ------------------- #
+kind: Service
+apiVersion: v1
+metadata:
+  annotations:
+    service.beta.kubernetes.io/aws-load-balancer-internal: false
+  labels:
+    k8s-app: kubernetes-dashboard
+  name: kubernetes-dashboard
+  namespace: kube-system
+spec:
+  ports:
+    - port: 443
+      targetPort: 9090
+  type: LoadBalancer
+  selector:
+    k8s-app: kubernetes-dashboard

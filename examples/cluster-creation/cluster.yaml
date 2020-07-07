@@ -1,0 +1,105 @@
+apiVersion: eksctl.io/v1alpha5
+kind: ClusterConfig
+
+metadata:
+  name: poc-cluster
+  region: us-east-1
+
+vpc: # Existing Amazon VPC
+  clusterEndpoints:
+    publicAccess:  true
+    privateAccess: true
+  id: "vpc-000000000"
+  cidr: "10.2.0.0/16"
+  subnets: # Definir todas as Subnets para que seus Masters possam estar alocados.
+    private:
+      us-east-1a:
+          id: "subnet-0000000"
+          cidr: "10.2.2.0/24"
+
+      us-east-1b:
+          id: "subnet-0000000"
+          cidr: "10.2.3.0/24" 
+                
+    public:
+      us-east-1a:
+          id: "subnet-0000000"
+          cidr: "10.2.0.0/24"
+
+      us-east-1b:
+          id: "subnet-0000000"
+          cidr: "10.2.1.0/24"
+
+iam:
+  serviceRoleARN: "arn:aws:iam::ACCOUNT_ID:role/eksClusterRole"
+
+# Example with managed node group for Amazon EKS
+managedNodeGroups:
+  - name: app-node-group
+    instanceType: t2.medium
+    minSize: 3
+    desiredCapacity: 3
+    maxSize: 10
+    availabilityZones: ["us-east-1a", "us-east-1b"]
+    volumeSize: 20
+    privateNetworking: true # Provisionar as instâncias dos Nodes somente em subnets privadas
+
+    ssh:
+      allow: false
+      # publicKeyPath: ~/.ssh/ec2_id_rsa.pub
+      # sourceSecurityGroupIds: ["sg-09b2a55e337f21e5e"]
+
+    labels: {role: worker} # Labels que vão ser aplicadas a nivel do K8s
+    tags: # Tags que serão aplicadas nas Ec2
+      nodegroup-role: worker 
+      k8s.io/cluster-autoscaler/poc-cluster: owned 
+      k8s.io/cluster-autoscaler/enabled: "true" # Não pode ser booleano
+      Name: poc-cluster-nodes
+      
+
+    # Você pode definir uma Role ou escolher que o eksctl crie as Policies para você
+    iam:
+      attachPolicyARNs:
+        - arn:aws:iam::aws:policy/AmazonEKSWorkerNodePolicy
+        - arn:aws:iam::aws:policy/AmazonEC2ContainerRegistryReadOnly
+        - arn:aws:iam::aws:policy/AmazonEKS_CNI_Policy
+      # instanceRoleARN: "arn:aws:iam::936068047509:role/NodeInstanceRole"
+      withAddonPolicies: # Adiciona policies na role dos Nodes para controllers adicionais do cluster
+        imageBuilder: false
+        autoScaler: true
+        externalDNS: true
+        certManager: true
+        appMesh: true
+        ebs: true
+        fsx: true
+        efs: true
+        albIngress: true
+        xRay: true
+        cloudWatch: true
+
+cloudWatch: # Configuração do export dos logs do ControlPlane para o Cloudtwatch
+  clusterLogging:
+    # enable specific types of cluster control plane logs
+    enableTypes: ["audit", "authenticator", "controllerManager"]
+    # all supported types: "api", "audit", "authenticator", "controllerManager", "scheduler"
+    # supported special values: "*" and "all"
+
+# Those are old node groups, that are just ASG with specifc AMI for registration under K8S
+
+# nodeGroups:
+#   - name: ng-1
+
+#     instanceType: m5.large
+#     desiredCapacity: 3
+#     iam:
+#       instanceProfileARN: "arn:aws:iam::11111:instance-profile/eks-nodes-base-role"
+#       instanceRoleARN: "arn:aws:iam::1111:role/eks-nodes-base-role"
+#     privateNetworking: true
+#     securityGroups:
+#       withShared: true
+#       withLocal: true
+#       attachIDs: ['sg-11111', 'sg-11112']
+#     ssh:
+#       publicKeyName: 'my-instance-key'
+#     tags:
+#       'environment:basedomain': 'example.org'

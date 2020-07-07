@@ -1,0 +1,17 @@
+{
+    "cluster_name": "Your cluster name, eg: poc-cluster",
+    "region": "Region name to provision, ex: us-east-1",
+    "vpc_id": "Your VPC id, eg: vpc-00000000",
+    "vpc_cidr": "VPC CIDR, eg: 10.10.0.0/16",
+    "availability_zone_1": "The first availability zone, eg: us-east-1a",
+    "availability_zone_2": "The second availability zone, eg: us-east-1b",
+    "subnet_priv_1a": "The first private subnet id [us-east-1a], eg: subnet-00000000",
+    "subnet_priv_1a_cidr": "The CIDR of the above subnet, eg: 10.10.2.0/24",
+    "subnet_priv_1b": "The second private subnet id [us-east-1b], ex: subnet-00000000",
+    "subnet_priv_1b_cidr": "The CIDR of the above subnet, eg: 10.10.3.0/24",
+    "subnet_pub_1a": "The first public subnet id [us-east-1a], eg: subnet-00000000",
+    "subnet_pub_1a_cidr": "The CIDR of the above subnet, eg: 10.10.0.0/24",
+    "subnet_pub_1b": "The second public subnet id [us-east-1b], ex: subnet-00000000",
+    "subnet_pub_1b_cidr": "The CIDR of the above subnet, eg: 10.10.1.0/24",
+    "eks_service_role": "The eks cluster role"
+}
