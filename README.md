@@ -175,7 +175,7 @@ The **examples/cluster-creation** folder was created to make it easier to unders
 
 A Java application has been developed so that we can test our previously provisioned cluster, this application makes the call to the AWS API using a role with permissions (Permission is done through Kube2Iam) where it lists the contents of a bucket.
 
-Follow the [README] instructions (examples/java-application-example/README.md) to provision it in the cluster
+Follow the [README](examples/java-application-example/README.md) to provision it in the cluster
 
 ## References
 
