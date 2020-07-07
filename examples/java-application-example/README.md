@@ -39,8 +39,8 @@ docker push ACCOUNT_ID.dkr.ecr.REGION.amazonaws.com/java-application-example:lat
 **kubernetes/01-configmap.yaml**
 
 ```yaml
-BUCKET_NAME: Your bucket to use on PoC
-REGION_NAME: Region where your bucket is
+BUCKET_NAME: <Your bucket to use on PoC>
+REGION_NAME: <Region where your bucket is>
 ```
 
 **kubernetes/02-deployment.yaml**

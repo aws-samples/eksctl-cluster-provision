@@ -17,12 +17,12 @@ spec:
   template:
     metadata:
       annotations:
-        iam.amazonaws.com/role: <Role com permissao de acesso ao S3>
+        iam.amazonaws.com/role: <Role with permission to access S3>
       labels:
         app: placeholder-app
     spec:
       containers:
-        - image: <URL da imagem que subimos para o ECR>
+        - image: <URL of the image we upload to the ECR>
           name: placeholder-app
           resources:
             requests:
